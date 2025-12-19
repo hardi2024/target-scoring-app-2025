@@ -35,4 +35,14 @@ In offline conditions, training results can be saved and exported in CSV format 
 This project is under active development and may be expanded to include web-based monitoring dashboards, automated target detection, and AI-assisted scoring features.
 
 ## Author
-Hardianto
+
+**Hardianto** ([@hardi2024](https://github.com/hardi2024))
+
+Lead Developer - Target Scoring Application
+
+## Acknowledgments
+
+Special thanks to:
+- System design and operations team
+- Documentation team
+- All contributors who made this project possible
