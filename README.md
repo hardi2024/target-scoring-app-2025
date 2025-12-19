@@ -192,6 +192,7 @@ Special thanks to:
 
 ### For Support:
 - **GitHub Issues**: [Report bugs or request features](https://github.com/hardi2024/target-scoring-app-2025/issues)
+- **Email**: [hardiee15@gmail.com]
 - **Documentation**: User manual available upon request
 
 ### Contributing
