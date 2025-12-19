@@ -1,0 +1,2326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Target Scoring App 2025</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 28px;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .connection-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .connection-status.online {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .connection-status.offline {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .sync-queue-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #fff3cd;
+            color: #856404;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sync-queue-badge:hover {
+            background: #ffc107;
+            color: white;
+        }
+
+        .sync-queue-badge.active {
+            animation: pulse-badge 2s infinite;
+        }
+
+        @keyframes pulse-badge {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .progress-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .info-card .label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .info-card .value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .db-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .db-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .db-header h2 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .db-status {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .db-status.empty {
+            color: #dc3545;
+        }
+
+        .db-status.loaded {
+            color: #28a745;
+        }
+
+        .data-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            width: 100%;
+        }
+
+        .import-area {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .import-area.active {
+            display: block;
+        }
+
+        .import-instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .import-instructions ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .import-instructions li {
+            margin-bottom: 5px;
+        }
+
+        textarea.import-text {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            resize: vertical;
+        }
+
+        .form-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-container h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .session-select {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .session-select label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .session-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .session-option {
+            position: relative;
+        }
+
+        .session-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .session-option label {
+            display: block;
+            padding: 12px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .session-option input[type="radio"]:checked + label {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .bullet-btn {
+            padding: 15px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #333;
+        }
+
+        .bullet-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .bullet-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .personnel-search {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .personnel-search label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            margin-top: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+
+        .search-result-item:hover {
+            background: #f8f9fa;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .result-details {
+            font-size: 13px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .no-results {
+            padding: 20px;
+            text-align: center;
+            color: #999;
+            font-style: italic;
+        }
+
+        .selected-personnel {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .selected-personnel.active {
+            display: block;
+        }
+
+        .selected-personnel .info-row {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .selected-personnel .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .selected-personnel .info-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .selected-personnel .info-value {
+            color: #333;
+        }
+
+        .scores-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .score-input {
+            display: grid;
+            grid-template-columns: 80px 60px 60px;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .score-input label {
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .score-field {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 18px;
+            text-align: center;
+            font-weight: bold;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+
+        .score-field:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: #fff;
+        }
+
+        .subtotal {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .total-score {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .total-label {
+            display: block;
+            color: white;
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .total-value {
+            display: block;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 6px;
+            background: #667eea;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .data-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .data-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .data-header h2 {
+            font-size: 20px;
+            color: #333;
+        }
+
+        .session-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th {
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 12px 8px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .empty-state {
+            padding: 40px !important;
+            text-align: center;
+            color: #999;
+            font-style: italic;
+        }
+
+        .btn-delete {
+            padding: 6px 12px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .modal-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #17a2b8;
+            color: #0c5460;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #28a745;
+            color: #155724;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            header h1 {
+                font-size: 24px;
+            }
+
+            .progress-info {
+                grid-template-columns: 1fr;
+            }
+
+            .session-options {
+                grid-template-columns: 1fr;
+            }
+
+            .score-input {
+                grid-template-columns: 80px 60px 60px !important;
+                gap: 8px;
+            }
+
+            .score-input label {
+                font-size: 14px;
+            }
+
+            .score-field {
+                font-size: 22px !important;
+            }
+
+            .subtotal {
+                font-size: 14px !important;
+                text-align: right;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            .total-value {
+                font-size: 36px;
+            }
+
+            table {
+                font-size: 11px;
+            }
+
+            th, td {
+                padding: 8px 4px;
+            }
+
+            .data-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .db-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .db-header h2 {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .data-actions {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                width: 100%;
+            }
+
+            .btn-small {
+                padding: 12px 10px;
+                font-size: 12px;
+                white-space: nowrap;
+            }
+
+            .connection-status, .sync-queue-badge {
+                position: static;
+                display: inline-block;
+                margin: 5px;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .saved {
+            animation: pulse 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="connection-status online" id="connectionStatus">🟢 Online</div>
+            <div class="sync-queue-badge" id="syncQueueBadge" onclick="showQueueView()" style="display: none;">
+                📝 Queue: <span id="syncQueueCount">0</span>
+            </div>
+            <h1>🎯 Target Scoring App 2025 - Fixed</h1>
+            <p class="subtitle">Aplikasi Input Nilai Tembak dengan Offline Sync Queue</p>
+            <span class="version-badge">✅ VERIFIED & FIXED</span>
+        </header>
+
+        <div class="progress-info">
+            <div class="info-card">
+                <span class="label">Database:</span>
+                <span class="value" id="dbCount">0</span>
+            </div>
+            <div class="info-card">
+                <span class="label">Total Input:</span>
+                <span class="value" id="totalSaved">0</span>
+            </div>
+            <div class="info-card">
+                <span class="label">Sesi Aktif:</span>
+                <span class="value" id="activeSession" style="font-size: 16px;">-</span>
+            </div>
+        </div>
+
+        <div class="db-container">
+            <div class="db-header">
+                <h2>📋 Database Personel</h2>
+                <div class="data-actions">
+                    <button class="btn-small" id="importBtn">📥 Import Data</button>
+                    <button class="btn-small" id="exportDbBtn">📤 Export DB</button>
+                    <button class="btn-small" id="viewDbBtn">👁️ Lihat DB</button>
+                    <button class="btn-small btn-danger" id="clearDbBtn">🗑️ Hapus DB</button>
+                </div>
+            </div>
+
+            <div class="db-status empty" id="dbStatus">
+                ⚠️ Database kosong. Silakan import data personel terlebih dahulu.
+            </div>
+
+            <div class="import-area" id="importArea">
+                <div class="import-instructions">
+                    <strong>Cara Import:</strong>
+                    <ol>
+                        <li>Buka file Excel Anda (3 kolom: Pangkat | Nama | NRP)</li>
+                        <li>Select dan Copy 3 kolom tersebut</li>
+                        <li>Paste di kotak bawah ini</li>
+                        <li>Klik "Proses Import"</li>
+                    </ol>
+                    <p style="margin-top: 10px;"><em>Format otomatis terdeteksi (Tab/Pipe/Comma)</em></p>
+                </div>
+
+                <textarea class="import-text" id="importText" placeholder="Paste data di sini...&#10;Contoh:&#10;Mayor Lek	Hardianto	536434&#10;Letda Adm	Wulan	198876457740"></textarea>
+
+                <div class="button-group" style="margin-top: 15px;">
+                    <button class="btn btn-primary" id="processImportBtn">✓ Proses Import</button>
+                    <button class="btn btn-secondary" id="cancelImportBtn">✗ Batal</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-container" id="scoringForm" style="display: none;">
+            <h2>Input Score</h2>
+            
+            <div class="session-select">
+                <label>Pilih Sesi Tembak:</label>
+                <div class="session-options">
+                    <div class="session-option">
+                        <input type="radio" name="session" id="sessionLP" value="Laras Panjang">
+                        <label for="sessionLP">🎯 Laras Panjang</label>
+                    </div>
+                    <div class="session-option">
+                        <input type="radio" name="session" id="sessionPistol" value="Pistol">
+                        <label for="sessionPistol">🔫 Pistol</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="session-select">
+                <label>Jumlah Peluru Diberikan:</label>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
+                    <button type="button" class="bullet-btn" data-bullets="10">10</button>
+                    <button type="button" class="bullet-btn" data-bullets="15">15</button>
+                    <button type="button" class="bullet-btn" data-bullets="manual">Manual</button>
+                </div>
+                <input type="number" id="bulletCount" min="1" max="100" placeholder="Atau ketik manual..." style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; text-align: center; font-weight: bold;">
+            </div>
+
+            <div class="personnel-search">
+                <label>Cari Personel:</label>
+                <input type="text" class="search-input" id="searchInput" placeholder="Ketik nama, pangkat, atau NRP..." autocomplete="off">
+                <div class="search-results" id="searchResults"></div>
+            </div>
+
+            <div class="selected-personnel" id="selectedPersonnel">
+                <div class="info-row">
+                    <span class="info-label">Pangkat:</span>
+                    <span class="info-value" id="selectedRank">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Nama:</span>
+                    <span class="info-value" id="selectedName">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">NRP:</span>
+                    <span class="info-value" id="selectedNRP">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Latihan:</span>
+                    <span class="info-value" id="selectedIteration" style="font-weight: bold; color: #667eea;">ke-1</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Peluru:</span>
+                    <span class="info-value" id="selectedBullets" style="font-weight: bold; color: #667eea;">- butir</span>
+                </div>
+            </div>
+
+            <div class="scores-grid">
+                <div class="score-input" style="grid-template-columns: 80px 60px 60px;">
+                    <label>Ring 1</label>
+                    <input type="number" id="r1" min="0" max="50" value="" class="score-field" style="font-size: 24px;" placeholder="0">
+                    <span class="subtotal" id="sub1" style="font-size: 16px;">= 0</span>
+                </div>
+
+                <div class="score-input" style="grid-template-columns: 80px 60px 60px;">
+                    <label>Ring 2</label>
+                    <input type="number" id="r2" min="0" max="50" value="" class="score-field" style="font-size: 24px;" placeholder="0">
+                    <span class="subtotal" id="sub2" style="font-size: 16px;">= 0</span>
+                </div>
+
+                <div class="score-input" style="grid-template-columns: 80px 60px 60px;">
+                    <label>Ring 3</label>
+                    <input type="number" id="r3" min="0" max="50" value="" class="score-field" style="font-size: 24px;" placeholder="0">
+                    <span class="subtotal" id="sub3" style="font-size: 16px;">= 0</span>
+                </div>
+
+                <div class="score-input" style="grid-template-columns: 80px 60px 60px;">
+                    <label>Ring 4</label>
+                    <input type="number" id="r4" min="0" max="50" value="" class="score-field" style="font-size: 24px;" placeholder="0">
+                    <span class="subtotal" id="sub4" style="font-size: 16px;">= 0</span>
+                </div>
+
+                <div class="score-input" style="grid-template-columns: 80px 60px 60px;">
+                    <label>Ring 5</label>
+                    <input type="number" id="r5" min="0" max="50" value="" class="score-field" style="font-size: 24px;" placeholder="0">
+                    <span class="subtotal" id="sub5" style="font-size: 16px;">= 0</span>
+                </div>
+
+                <div class="score-input" style="grid-template-columns: 80px 60px 60px;">
+                    <label>Ring 6</label>
+                    <input type="number" id="r6" min="0" max="50" value="" class="score-field" style="font-size: 24px;" placeholder="0">
+                    <span class="subtotal" id="sub6" style="font-size: 16px;">= 0</span>
+                </div>
+
+                <div class="score-input" style="grid-template-columns: 80px 60px 60px;">
+                    <label>Ring 7</label>
+                    <input type="number" id="r7" min="0" max="50" value="" class="score-field" style="font-size: 24px;" placeholder="0">
+                    <span class="subtotal" id="sub7" style="font-size: 16px;">= 0</span>
+                </div>
+
+                <div class="score-input" style="grid-template-columns: 80px 60px 60px;">
+                    <label>Ring 8</label>
+                    <input type="number" id="r8" min="0" max="50" value="" class="score-field" style="font-size: 24px;" placeholder="0">
+                    <span class="subtotal" id="sub8" style="font-size: 16px;">= 0</span>
+                </div>
+
+                <div class="score-input" style="grid-template-columns: 80px 60px 60px;">
+                    <label>Ring 9</label>
+                    <input type="number" id="r9" min="0" max="50" value="" class="score-field" style="font-size: 24px;" placeholder="0">
+                    <span class="subtotal" id="sub9" style="font-size: 16px;">= 0</span>
+                </div>
+
+                <div class="score-input" style="grid-template-columns: 80px 60px 60px;">
+                    <label>Ring 10</label>
+                    <input type="number" id="r10" min="0" max="50" value="" class="score-field" style="font-size: 24px;" placeholder="0">
+                    <span class="subtotal" id="sub10" style="font-size: 16px;">= 0</span>
+                </div>
+                
+                <div class="score-input" style="grid-template-columns: 80px 60px 60px; background: #fff3cd; border: 2px solid #ffc107;">
+                    <label style="color: #856404;">Luar Ring</label>
+                    <input type="number" id="outsideRing" min="0" max="50" value="" class="score-field" style="font-size: 24px;" placeholder="0">
+                    <span style="font-size: 12px; color: #856404;">Dalam kotak</span>
+                </div>
+                
+                <div class="score-input" style="grid-template-columns: 80px 60px 60px; background: #f8d7da; border: 2px solid #dc3545;">
+                    <label style="color: #721c24;">Luar Kotak</label>
+                    <input type="number" id="outsideBox" min="0" max="50" value="" class="score-field" style="font-size: 24px;" placeholder="0">
+                    <span style="font-size: 12px; color: #721c24;">Total miss</span>
+                </div>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center;">
+                    <div>
+                        <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Masuk Ring</div>
+                        <div style="font-size: 22px; font-weight: bold; color: #28a745;" id="insideBullets">0</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Luar Ring</div>
+                        <div style="font-size: 22px; font-weight: bold; color: #ffc107;" id="outsideRingDisplay">0</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Luar Kotak</div>
+                        <div style="font-size: 22px; font-weight: bold; color: #dc3545;" id="outsideBoxDisplay">0</div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 15px; padding-top: 15px; border-top: 2px solid #e0e0e0;">
+                    <div style="font-size: 12px; color: #666; margin-bottom: 5px;">Akurasi</div>
+                    <div style="font-size: 28px; font-weight: bold; color: #667eea;" id="accuracy">0%</div>
+                </div>
+            </div>
+
+            <div class="total-score">
+                <span class="total-label">TOTAL SCORE:</span>
+                <span class="total-value" id="totalScore">0</span>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" id="saveBtn" disabled>💾 SIMPAN & NEXT</button>
+                <button class="btn btn-secondary" id="resetBtn">🔄 RESET</button>
+            </div>
+        </div>
+
+        <div class="data-container">
+            <div class="data-header">
+                <h2>📊 Data Tersimpan</h2>
+                <div class="data-actions">
+                    <button class="btn-small" id="manualSyncBtn">🔄 Sync Now</button>
+                    <button class="btn-small" id="exportBtn">📥 Export CSV</button>
+                    <button class="btn-small btn-danger" id="clearScoresBtn">🗑️ Hapus Semua</button>
+                </div>
+            </div>
+
+            <div class="session-filter">
+                <button class="filter-btn active" data-filter="all">Semua</button>
+                <button class="filter-btn" data-filter="Laras Panjang">Laras Panjang</button>
+                <button class="filter-btn" data-filter="Pistol">Pistol</button>
+            </div>
+            
+            <div class="table-wrapper">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>Pangkat</th>
+                            <th>Nama</th>
+                            <th>NRP</th>
+                            <th>Sesi</th>
+                            <th>Iter</th>
+                            <th>R10</th>
+                            <th>R9</th>
+                            <th>R8</th>
+                            <th>R7</th>
+                            <th>R6</th>
+                            <th>R5</th>
+                            <th>R4</th>
+                            <th>R3</th>
+                            <th>R2</th>
+                            <th>R1</th>
+                            <th>Luar</th>
+                            <th>Total Peluru</th>
+                            <th>Akurasi</th>
+                            <th>Score</th>
+                            <th>Waktu</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataBody">
+                        <tr>
+                            <td colspan="21" class="empty-state">
+                                Belum ada data. Import database personel dan mulai input scoring!
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer>
+            <p>💾 <strong>V9 - VERIFIED & FIXED</strong> - Entry IDs dari URL Pre-fill | Data tersimpan lokal + Auto-sync ke Google Form</p>
+        </footer>
+    </div>
+
+    <div class="modal" id="validationModal">
+        <div class="modal-content">
+            <div class="modal-header">⚠️ Peringatan</div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="modalOverwrite">Timpa Data</button>
+                <button class="btn btn-secondary" id="modalCancel">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="dbViewModal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">👥 Database Personel</div>
+            <div class="modal-body">
+                <div class="table-wrapper" style="max-height: 400px; overflow-y: auto;">
+                    <table style="font-size: 12px;">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Pangkat</th>
+                                <th>Nama</th>
+                                <th>NRP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dbViewBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-actions" style="grid-template-columns: 1fr;">
+                <button class="btn btn-secondary" id="closeDbViewBtn">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="dbExportModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">📤 Export Database</div>
+            <div class="modal-body">
+                <div class="alert alert-info" style="margin-bottom: 15px;">
+                    <strong>Cara Transfer ke HP:</strong><br>
+                    1. Klik "Copy Database"<br>
+                    2. Paste ke WA/Email dan kirim ke HP<br>
+                    3. Di HP: Copy text → Import Data → Paste → Import
+                </div>
+                <textarea id="exportDbText" readonly style="width: 100%; min-height: 200px; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: monospace; font-size: 12px; background: #f8f9fa;"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="copyDbBtn">📋 Copy Database</button>
+                <button class="btn btn-secondary" id="closeExportBtn">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="queueViewModal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">📝 Sync Queue - Data Pending</div>
+            <div class="modal-body">
+                <div class="alert alert-info" style="margin-bottom: 15px;">
+                    Data di bawah ini menunggu untuk di-sync ke Google Form. Sync otomatis akan berjalan saat internet aktif.
+                </div>
+                <div class="table-wrapper" style="max-height: 400px; overflow-y: auto;">
+                    <table style="font-size: 12px;">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>Sesi</th>
+                                <th>Iter</th>
+                                <th>Score</th>
+                                <th>Retry</th>
+                            </tr>
+                        </thead>
+                        <tbody id="queueViewBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="syncQueueNowBtn">🔄 Sync Sekarang</button>
+                <button class="btn btn-secondary" id="closeQueueViewBtn">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+
+
+		// ============================================
+        // GOOGLE FORM CONFIGURATION
+        // ============================================
+        // PETUNJUK SETUP:
+        // 1. Buat Google Form Anda sendiri (lihat Bab 2 Buku Panduan)
+        // 2. Ganti 'formUrl' dengan link formResponse dari Google Form Anda
+        // 3. Ganti semua 'entry.XXXXXXX' dengan Entry IDs dari form Anda
+        // 4. Entry IDs bisa didapat dari mode prapengisian Google Form
+        // ============================================
+        const GOOGLE_FORM_CONFIG = {
+            enabled: true,
+            formUrl: 'https://docs.google.com/forms/d/e/[GANTI-DENGAN-FORM-ID-ANDA]/formResponse',
+            entryIds: {
+                rank: 'entry.XXXXXXX',           // Ganti dengan Entry ID Anda - Pangkat
+                name: 'entry.XXXXXXX',           // Ganti dengan Entry ID Anda - Nama
+                nrp: 'entry.XXXXXXX',            // Ganti dengan Entry ID Anda - NRP
+                weapon: 'entry.XXXXXXX',         // Ganti dengan Entry ID Anda - Jenis Senjata
+                totalBullets: 'entry.XXXXXXX',   // Ganti dengan Entry ID Anda - Jumlah Peluru
+                iteration: 'entry.XXXXXXX',      // Ganti dengan Entry ID Anda - Latihan Ke-
+                ring1: 'entry.XXXXXXX',          // Ganti dengan Entry ID Anda - Ring 1
+                ring2: 'entry.XXXXXXX',          // Ganti dengan Entry ID Anda - Ring 2
+                ring3: 'entry.XXXXXXX',          // Ganti dengan Entry ID Anda - Ring 3
+                ring4: 'entry.XXXXXXX',          // Ganti dengan Entry ID Anda - Ring 4
+                ring5: 'entry.XXXXXXX',          // Ganti dengan Entry ID Anda - Ring 5
+                ring6: 'entry.XXXXXXX',          // Ganti dengan Entry ID Anda - Ring 6
+                ring7: 'entry.XXXXXXX',          // Ganti dengan Entry ID Anda - Ring 7
+                ring8: 'entry.XXXXXXX',          // Ganti dengan Entry ID Anda - Ring 8
+                ring9: 'entry.XXXXXXX',          // Ganti dengan Entry ID Anda - Ring 9
+                ring10: 'entry.XXXXXXX',         // Ganti dengan Entry ID Anda - Ring 10
+                outsideRing: 'entry.XXXXXXX',    // Ganti dengan Entry ID Anda - Luar Ring
+                outsideBox: 'entry.XXXXXXX',     // Ganti dengan Entry ID Anda - Luar Kotak
+                totalScore: 'entry.XXXXXXX',     // Ganti dengan Entry ID Anda - Total Score
+                accuracy: 'entry.XXXXXXX'        // Ganti dengan Entry ID Anda - Akurasi (%)
+            }
+        };
+
+        // ============================================
+        // OFFLINE SYNC QUEUE MANAGER
+        // ============================================
+        const SyncQueue = {
+            queue: [],
+            isSyncing: false,
+            
+            init() {
+                const savedQueue = localStorage.getItem('syncQueue_v9');
+                if (savedQueue) {
+                    try {
+                        this.queue = JSON.parse(savedQueue);
+                        console.log(`📝 Loaded ${this.queue.length} items from sync queue`);
+                    } catch (e) {
+                        console.error('Error loading queue:', e);
+                        this.queue = [];
+                    }
+                }
+                
+                window.addEventListener('online', () => {
+                    console.log('✅ Internet connected - Starting auto-sync...');
+                    updateConnectionStatus(true);
+                    setTimeout(() => this.syncAll(), 2000);
+                });
+                
+                window.addEventListener('offline', () => {
+                    console.log('⚠️ Internet disconnected - Queuing mode active');
+                    updateConnectionStatus(false);
+                });
+                
+                updateConnectionStatus(navigator.onLine);
+                
+                if (navigator.onLine && this.queue.length > 0) {
+                    console.log(`🔄 Online detected with ${this.queue.length} queued items - Starting sync...`);
+                    setTimeout(() => this.syncAll(), 1000);
+                }
+                
+                this.updateUI();
+            },
+            
+            add(scoreData) {
+                this.queue.push({
+                    id: Date.now() + Math.random(),
+                    data: scoreData,
+                    timestamp: new Date().toISOString(),
+                    attempts: 0
+                });
+                this.save();
+                console.log(`📝 Added to queue: ${scoreData.name} (${scoreData.session}) - Queue size: ${this.queue.length}`);
+            },
+            
+            save() {
+                try {
+                    localStorage.setItem('syncQueue_v9', JSON.stringify(this.queue));
+                    this.updateUI();
+                } catch (e) {
+                    console.error('Error saving queue:', e);
+                }
+            },
+            
+            async syncAll() {
+                if (this.isSyncing) {
+                    console.log('⏳ Sync already in progress...');
+                    return;
+                }
+                
+                if (this.queue.length === 0) {
+                    console.log('✅ Queue is empty, nothing to sync');
+                    return;
+                }
+                
+                if (!navigator.onLine) {
+                    console.log('⚠️ Offline - Cannot sync now');
+                    alert('⚠️ Tidak ada koneksi internet.\n\nData akan di-sync otomatis saat internet aktif.');
+                    return;
+                }
+                
+                this.isSyncing = true;
+                console.log(`🔄 Starting sync for ${this.queue.length} items...`);
+                
+                const manualSyncBtn = document.getElementById('manualSyncBtn');
+                if (manualSyncBtn) {
+                    manualSyncBtn.textContent = '⏳ Syncing...';
+                    manualSyncBtn.disabled = true;
+                }
+                
+                const failedItems = [];
+                let successCount = 0;
+                
+                for (const item of this.queue) {
+                    const success = await this.syncOne(item.data);
+                    
+                    if (success) {
+                        successCount++;
+                    } else {
+                        item.attempts++;
+                        if (item.attempts < 3) {
+                            failedItems.push(item);
+                            console.log(`⚠️ Sync failed (attempt ${item.attempts}/3): ${item.data.name}`);
+                        } else {
+                            console.error(`❌ Failed after 3 attempts, discarding: ${item.data.name}`);
+                        }
+                    }
+                    
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                
+                this.queue = failedItems;
+                this.save();
+                this.isSyncing = false;
+                
+                if (manualSyncBtn) {
+                    manualSyncBtn.textContent = '🔄 Sync Now';
+                    manualSyncBtn.disabled = false;
+                }
+                
+                if (this.queue.length === 0) {
+                    console.log(`✅ All ${successCount} items synced successfully!`);
+                    alert(`✅ Sync Berhasil!\n\n${successCount} data berhasil dikirim ke Google Form.`);
+                } else {
+                    console.log(`⚠️ ${this.queue.length} items failed, will retry later`);
+                    alert(`⚠️ Sync Sebagian Berhasil\n\n✅ Berhasil: ${successCount}\n❌ Gagal: ${this.queue.length}\n\nData yang gagal akan di-retry otomatis.`);
+                }
+            },
+            
+            async syncOne(scoreData) {
+                if (!navigator.onLine) return false;
+                
+                try {
+                    const formData = new FormData();
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.rank, scoreData.rank);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.name, scoreData.name);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.nrp, scoreData.nrp);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.weapon, scoreData.session);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.totalBullets, scoreData.totalBullets);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.iteration, scoreData.iteration);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.ring1, scoreData.r1);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.ring2, scoreData.r2);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.ring3, scoreData.r3);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.ring4, scoreData.r4);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.ring5, scoreData.r5);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.ring6, scoreData.r6);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.ring7, scoreData.r7);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.ring8, scoreData.r8);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.ring9, scoreData.r9);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.ring10, scoreData.r10);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.outsideRing, scoreData.outsideRing);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.outsideBox, scoreData.outsideBox);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.totalScore, scoreData.total);
+                    formData.append(GOOGLE_FORM_CONFIG.entryIds.accuracy, scoreData.accuracy);
+
+                    await fetch(GOOGLE_FORM_CONFIG.formUrl, {
+                        method: 'POST',
+                        body: formData,
+                        mode: 'no-cors'
+                    });
+
+                    console.log(`✅ Synced: ${scoreData.name} (${scoreData.session} - Iter ${scoreData.iteration})`);
+                    return true;
+
+                } catch (error) {
+                    console.error(`❌ Sync failed: ${scoreData.name}`, error);
+                    return false;
+                }
+            },
+            
+            updateUI() {
+                const queueCountEl = document.getElementById('syncQueueCount');
+                const queueBadgeEl = document.getElementById('syncQueueBadge');
+                
+                if (queueCountEl) {
+                    queueCountEl.textContent = this.queue.length;
+                }
+                
+                if (queueBadgeEl) {
+                    if (this.queue.length > 0) {
+                        queueBadgeEl.style.display = 'block';
+                        queueBadgeEl.classList.add('active');
+                    } else {
+                        queueBadgeEl.style.display = 'none';
+                        queueBadgeEl.classList.remove('active');
+                    }
+                }
+            },
+            
+            clear() {
+                this.queue = [];
+                this.save();
+                console.log('🗑️ Queue cleared');
+            },
+            
+            getQueue() {
+                return this.queue;
+            }
+        };
+
+        function updateConnectionStatus(isOnline) {
+            const statusEl = document.getElementById('connectionStatus');
+            if (statusEl) {
+                if (isOnline) {
+                    statusEl.textContent = '🟢 Online';
+                    statusEl.className = 'connection-status online';
+                } else {
+                    statusEl.textContent = '🔴 Offline';
+                    statusEl.className = 'connection-status offline';
+                }
+            }
+        }
+
+        async function sendToGoogleForm(scoreData) {
+            if (!GOOGLE_FORM_CONFIG.enabled) {
+                console.log('Google Form sync disabled');
+                return false;
+            }
+
+            if (!navigator.onLine) {
+                console.log('⚠️ Offline - Adding to sync queue');
+                SyncQueue.add(scoreData);
+                return false;
+            }
+
+            try {
+                console.log('📤 Sending to Google Form:', scoreData.name);
+                
+                const formData = new FormData();
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.rank, scoreData.rank);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.name, scoreData.name);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.nrp, scoreData.nrp);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.weapon, scoreData.session);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.totalBullets, scoreData.totalBullets);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.iteration, scoreData.iteration);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.ring1, scoreData.r1);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.ring2, scoreData.r2);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.ring3, scoreData.r3);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.ring4, scoreData.r4);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.ring5, scoreData.r5);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.ring6, scoreData.r6);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.ring7, scoreData.r7);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.ring8, scoreData.r8);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.ring9, scoreData.r9);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.ring10, scoreData.r10);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.outsideRing, scoreData.outsideRing);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.outsideBox, scoreData.outsideBox);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.totalScore, scoreData.total);
+                formData.append(GOOGLE_FORM_CONFIG.entryIds.accuracy, scoreData.accuracy);
+
+                await fetch(GOOGLE_FORM_CONFIG.formUrl, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors'
+                });
+
+                console.log('✅ Data sent to Google Form successfully');
+                return true;
+
+            } catch (error) {
+                console.error('❌ Error sending to Google Form:', error);
+                SyncQueue.add(scoreData);
+                return false;
+            }
+        }
+
+        // ============================================
+        // GLOBAL STATE
+        // ============================================
+        let personnelDB = [];
+        let scores = [];
+        let selectedPersonnel = null;
+        let currentSession = null;
+        let currentBulletCount = 0;
+        let currentIteration = 1;
+        let currentFilter = 'all';
+
+        const dbCount = document.getElementById('dbCount');
+        const totalSaved = document.getElementById('totalSaved');
+        const activeSession = document.getElementById('activeSession');
+        const dbStatus = document.getElementById('dbStatus');
+        const importBtn = document.getElementById('importBtn');
+        const exportDbBtn = document.getElementById('exportDbBtn');
+        const viewDbBtn = document.getElementById('viewDbBtn');
+        const clearDbBtn = document.getElementById('clearDbBtn');
+        const importArea = document.getElementById('importArea');
+        const importText = document.getElementById('importText');
+        const processImportBtn = document.getElementById('processImportBtn');
+        const cancelImportBtn = document.getElementById('cancelImportBtn');
+        const scoringForm = document.getElementById('scoringForm');
+        const sessionRadios = document.querySelectorAll('input[name="session"]');
+        const bulletBtns = document.querySelectorAll('.bullet-btn');
+        const bulletCountInput = document.getElementById('bulletCount');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        const selectedPersonnelDiv = document.getElementById('selectedPersonnel');
+        const selectedRank = document.getElementById('selectedRank');
+        const selectedName = document.getElementById('selectedName');
+        const selectedNRP = document.getElementById('selectedNRP');
+        const selectedIteration = document.getElementById('selectedIteration');
+        const selectedBullets = document.getElementById('selectedBullets');
+        
+        const scoreFields = {
+            r10: document.getElementById('r10'),
+            r9: document.getElementById('r9'),
+            r8: document.getElementById('r8'),
+            r7: document.getElementById('r7'),
+            r6: document.getElementById('r6'),
+            r5: document.getElementById('r5'),
+            r4: document.getElementById('r4'),
+            r3: document.getElementById('r3'),
+            r2: document.getElementById('r2'),
+            r1: document.getElementById('r1'),
+            outsideRing: document.getElementById('outsideRing'),
+            outsideBox: document.getElementById('outsideBox')
+        };
+
+        const totalScoreDisplay = document.getElementById('totalScore');
+        const insideBulletsDisplay = document.getElementById('insideBullets');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const dataBody = document.getElementById('dataBody');
+        const saveBtn = document.getElementById('saveBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const clearScoresBtn = document.getElementById('clearScoresBtn');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const validationModal = document.getElementById('validationModal');
+        const modalBody = document.getElementById('modalBody');
+        const modalOverwrite = document.getElementById('modalOverwrite');
+        const modalCancel = document.getElementById('modalCancel');
+        const dbViewModal = document.getElementById('dbViewModal');
+        const dbViewBody = document.getElementById('dbViewBody');
+        const closeDbViewBtn = document.getElementById('closeDbViewBtn');
+        const dbExportModal = document.getElementById('dbExportModal');
+        const exportDbText = document.getElementById('exportDbText');
+        const copyDbBtn = document.getElementById('copyDbBtn');
+        const closeExportBtn = document.getElementById('closeExportBtn');
+        const manualSyncBtn = document.getElementById('manualSyncBtn');
+        const queueViewModal = document.getElementById('queueViewModal');
+        const queueViewBody = document.getElementById('queueViewBody');
+        const closeQueueViewBtn = document.getElementById('closeQueueViewBtn');
+        const syncQueueNowBtn = document.getElementById('syncQueueNowBtn');
+
+        function init() {
+            loadFromLocalStorage();
+            updateDisplay();
+            attachEventListeners();
+            SyncQueue.init();
+        }
+
+        function loadFromLocalStorage() {
+            const savedDB = localStorage.getItem('personnelDB_v3');
+            const savedScores = localStorage.getItem('scoringData_v3');
+            
+            if (savedDB) {
+                personnelDB = JSON.parse(savedDB);
+            }
+            
+            if (savedScores) {
+                scores = JSON.parse(savedScores);
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('personnelDB_v3', JSON.stringify(personnelDB));
+            localStorage.setItem('scoringData_v3', JSON.stringify(scores));
+        }
+
+        function attachEventListeners() {
+            importBtn.addEventListener('click', showImportArea);
+            exportDbBtn.addEventListener('click', showExportDatabase);
+            viewDbBtn.addEventListener('click', showDatabaseView);
+            clearDbBtn.addEventListener('click', clearDatabase);
+            processImportBtn.addEventListener('click', processImport);
+            cancelImportBtn.addEventListener('click', hideImportArea);
+            closeDbViewBtn.addEventListener('click', () => dbViewModal.classList.remove('active'));
+            copyDbBtn.addEventListener('click', copyDatabaseToClipboard);
+            closeExportBtn.addEventListener('click', () => dbExportModal.classList.remove('active'));
+
+            manualSyncBtn.addEventListener('click', () => SyncQueue.syncAll());
+            closeQueueViewBtn.addEventListener('click', () => queueViewModal.classList.remove('active'));
+            syncQueueNowBtn.addEventListener('click', () => {
+                queueViewModal.classList.remove('active');
+                SyncQueue.syncAll();
+            });
+
+            sessionRadios.forEach(radio => {
+                radio.addEventListener('change', handleSessionChange);
+            });
+
+            bulletBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const bullets = btn.dataset.bullets;
+                    if (bullets === 'manual') {
+                        bulletBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        bulletCountInput.focus();
+                    } else {
+                        selectBulletCount(parseInt(bullets));
+                    }
+                });
+            });
+
+            bulletCountInput.addEventListener('input', () => {
+                const bullets = parseInt(bulletCountInput.value);
+                if (bullets > 0) {
+                    currentBulletCount = bullets;
+                    bulletBtns.forEach(b => b.classList.remove('active'));
+                    document.querySelector('[data-bullets="manual"]').classList.add('active');
+                    updateSelectedPersonnelDisplay();
+                    updateSaveButton();
+                }
+            });
+
+            searchInput.addEventListener('input', handleSearch);
+            searchInput.addEventListener('focus', handleSearch);
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                    searchResults.classList.remove('active');
+                }
+            });
+
+            Object.values(scoreFields).forEach(field => {
+                field.addEventListener('input', calculateTotal);
+            });
+            
+            saveBtn.addEventListener('click', saveScore);
+            resetBtn.addEventListener('click', resetForm);
+            exportBtn.addEventListener('click', exportToCSV);
+            clearScoresBtn.addEventListener('click', clearAllScores);
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', handleFilter);
+            });
+
+            modalCancel.addEventListener('click', () => validationModal.classList.remove('active'));
+            modalOverwrite.addEventListener('click', handleOverwrite);
+
+            document.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && e.target.tagName === 'INPUT' && e.target.type === 'number') {
+                    if (!saveBtn.disabled) {
+                        saveScore();
+                    }
+                }
+            });
+        }
+
+        function showImportArea() {
+            importArea.classList.add('active');
+            importText.value = '';
+            importText.focus();
+        }
+
+        function hideImportArea() {
+            importArea.classList.remove('active');
+        }
+
+        function processImport() {
+            const text = importText.value.trim();
+            
+            if (!text) {
+                alert('Mohon paste data terlebih dahulu!');
+                return;
+            }
+
+            const lines = text.split('\n').filter(line => line.trim());
+            const newPersonnel = [];
+
+            for (let line of lines) {
+                let parts;
+                if (line.includes('\t')) {
+                    parts = line.split('\t');
+                } else if (line.includes('|')) {
+                    parts = line.split('|');
+                } else if (line.includes(',')) {
+                    parts = line.split(',');
+                } else {
+                    continue;
+                }
+
+                parts = parts.map(p => p.trim()).filter(p => p);
+                
+                if (parts.length >= 3) {
+                    newPersonnel.push({
+                        rank: parts[0],
+                        name: parts[1],
+                        nrp: parts[2]
+                    });
+                }
+            }
+
+            if (newPersonnel.length === 0) {
+                alert('Tidak ada data valid yang dapat di-import!\n\nPastikan format: Pangkat | Nama | NRP');
+                return;
+            }
+
+            if (personnelDB.length > 0) {
+                if (!confirm(`Database sudah berisi ${personnelDB.length} personel.\n\nImport ${newPersonnel.length} personel baru akan MENGGANTI database lama.\n\nLanjutkan?`)) {
+                    return;
+                }
+            }
+
+            personnelDB = newPersonnel;
+            saveToLocalStorage();
+            updateDisplay();
+            hideImportArea();
+            
+            alert(`✅ Berhasil import ${personnelDB.length} personel!`);
+        }
+
+        function showDatabaseView() {
+            if (personnelDB.length === 0) {
+                alert('Database masih kosong!');
+                return;
+            }
+
+            dbViewBody.innerHTML = personnelDB.map((p, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${p.rank}</td>
+                    <td>${p.name}</td>
+                    <td>${p.nrp}</td>
+                </tr>
+            `).join('');
+
+            dbViewModal.classList.add('active');
+        }
+
+        function showExportDatabase() {
+            if (personnelDB.length === 0) {
+                alert('Database masih kosong!');
+                return;
+            }
+
+            const dbText = personnelDB.map(p => `${p.rank}\t${p.name}\t${p.nrp}`).join('\n');
+            exportDbText.value = dbText;
+            dbExportModal.classList.add('active');
+        }
+
+        function copyDatabaseToClipboard() {
+            exportDbText.select();
+            document.execCommand('copy');
+            
+            const originalText = copyDbBtn.textContent;
+            copyDbBtn.textContent = '✅ Copied!';
+            copyDbBtn.style.background = '#28a745';
+            
+            setTimeout(() => {
+                copyDbBtn.textContent = originalText;
+                copyDbBtn.style.background = '';
+            }, 2000);
+            
+            alert(`✅ Database berhasil di-copy!\n\n${personnelDB.length} personel\n\nSekarang Anda bisa paste ke WA/Email untuk transfer ke HP.`);
+        }
+
+        function clearDatabase() {
+            if (personnelDB.length === 0) {
+                alert('Database sudah kosong!');
+                return;
+            }
+
+            if (confirm(`Hapus semua ${personnelDB.length} personel dari database?\n\nData scoring yang sudah tersimpan TIDAK akan terhapus.`)) {
+                personnelDB = [];
+                saveToLocalStorage();
+                updateDisplay();
+                alert('Database berhasil dikosongkan!');
+            }
+        }
+
+        function showQueueView() {
+            const queue = SyncQueue.getQueue();
+            
+            if (queue.length === 0) {
+                alert('✅ Queue kosong!\n\nSemua data sudah di-sync ke Google Form.');
+                return;
+            }
+
+            queueViewBody.innerHTML = queue.map((item, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${item.data.name}</td>
+                    <td>${item.data.session}</td>
+                    <td>${item.data.iteration}</td>
+                    <td>${item.data.total}</td>
+                    <td>${item.attempts}/3</td>
+                </tr>
+            `).join('');
+
+            queueViewModal.classList.add('active');
+        }
+
+        function handleSessionChange(e) {
+            currentSession = e.target.value;
+            activeSession.textContent = currentSession;
+            
+            if (selectedPersonnel) {
+                detectNextIteration();
+            }
+            
+            updateSaveButton();
+        }
+
+        function selectBulletCount(bullets) {
+            currentBulletCount = bullets;
+            bulletCountInput.value = bullets;
+            
+            bulletBtns.forEach(btn => {
+                if (parseInt(btn.dataset.bullets) === bullets) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            updateSelectedPersonnelDisplay();
+            updateSaveButton();
+        }
+
+        function handleSearch() {
+            const query = searchInput.value.trim().toLowerCase();
+
+            if (!query || personnelDB.length === 0) {
+                searchResults.classList.remove('active');
+                return;
+            }
+
+            const results = personnelDB.filter(p => {
+                return p.name.toLowerCase().includes(query) ||
+                       p.rank.toLowerCase().includes(query) ||
+                       p.nrp.toLowerCase().includes(query);
+            }).sort((a, b) => {
+                const aName = a.name.toLowerCase();
+                const bName = b.name.toLowerCase();
+                const q = query.toLowerCase();
+                
+                const aExact = aName === q;
+                const bExact = bName === q;
+                if (aExact && !bExact) return -1;
+                if (!aExact && bExact) return 1;
+                
+                const aStarts = aName.startsWith(q);
+                const bStarts = bName.startsWith(q);
+                if (aStarts && !bStarts) return -1;
+                if (!aStarts && bStarts) return 1;
+                
+                const aNameMatch = aName.includes(q);
+                const bNameMatch = bName.includes(q);
+                if (aNameMatch && !bNameMatch) return -1;
+                if (!aNameMatch && bNameMatch) return 1;
+                
+                return aName.localeCompare(bName);
+            }).slice(0, 5);
+
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="no-results">Tidak ditemukan</div>';
+            } else {
+                searchResults.innerHTML = results.map(p => `
+                    <div class="search-result-item" data-nrp="${p.nrp}">
+                        <div class="result-name">${p.name} (${p.rank})</div>
+                        <div class="result-details">NRP: ${p.nrp}</div>
+                    </div>
+                `).join('');
+
+                searchResults.querySelectorAll('.search-result-item').forEach(item => {
+                    item.addEventListener('click', () => selectPersonnel(item.dataset.nrp));
+                });
+            }
+
+            searchResults.classList.add('active');
+        }
+
+        function selectPersonnel(nrp) {
+            selectedPersonnel = personnelDB.find(p => p.nrp === nrp);
+            
+            if (selectedPersonnel) {
+                searchInput.value = selectedPersonnel.name;
+                selectedRank.textContent = selectedPersonnel.rank;
+                selectedName.textContent = selectedPersonnel.name;
+                selectedNRP.textContent = selectedPersonnel.nrp;
+                
+                detectNextIteration();
+                
+                updateSelectedPersonnelDisplay();
+                selectedPersonnelDiv.classList.add('active');
+                searchResults.classList.remove('active');
+                updateSaveButton();
+                
+                scoreFields.r1.focus();
+            }
+        }
+
+        function detectNextIteration() {
+            if (!selectedPersonnel || !currentSession) {
+                currentIteration = 1;
+                return;
+            }
+            
+            const existingScores = scores.filter(s => 
+                s.nrp === selectedPersonnel.nrp && 
+                s.session === currentSession
+            );
+            
+            const maxIter = existingScores.length > 0 
+                ? Math.max(...existingScores.map(s => s.iteration || 1))
+                : 0;
+            
+            const nextIter = maxIter + 1;
+            
+            if (nextIter > 3) {
+                currentIteration = 3;
+                selectedIteration.textContent = `ke-${currentIteration} (MAX)`;
+                selectedIteration.style.color = '#dc3545';
+            } else {
+                currentIteration = nextIter;
+                selectedIteration.textContent = `ke-${currentIteration}`;
+                selectedIteration.style.color = '#667eea';
+            }
+            
+            if (existingScores.length > 0) {
+                const lastScore = existingScores[existingScores.length - 1];
+                console.log(`${selectedPersonnel.name} sudah ${existingScores.length}x latihan ${currentSession}. Score terakhir: ${lastScore.total}`);
+            }
+        }
+
+        function updateSelectedPersonnelDisplay() {
+            if (selectedPersonnel && currentBulletCount > 0) {
+                selectedBullets.textContent = `${currentBulletCount} butir`;
+            }
+        }
+
+        function updateSaveButton() {
+            saveBtn.disabled = !(selectedPersonnel && currentSession && currentBulletCount > 0);
+        }
+
+        function calculateTotal() {
+            let total = 0;
+            let insideRing = 0;
+            
+            for (let ring = 1; ring <= 10; ring++) {
+                const field = scoreFields[`r${ring}`];
+                const value = parseInt(field.value) || 0;
+                const subtotal = value * ring;
+                
+                document.getElementById(`sub${ring}`).textContent = `= ${subtotal}`;
+                total += subtotal;
+                insideRing += value;
+            }
+            
+            const outsideRing = parseInt(scoreFields.outsideRing.value) || 0;
+            const outsideBox = parseInt(scoreFields.outsideBox.value) || 0;
+            const totalInput = insideRing + outsideRing + outsideBox;
+            
+            const accuracy = currentBulletCount > 0 ? ((insideRing / currentBulletCount) * 100).toFixed(1) : 0;
+            
+            if (totalInput > currentBulletCount && currentBulletCount > 0) {
+                insideBulletsDisplay.style.color = '#dc3545';
+            } else {
+                insideBulletsDisplay.style.color = '#28a745';
+            }
+            
+            totalScoreDisplay.textContent = total;
+            insideBulletsDisplay.textContent = insideRing;
+            document.getElementById('outsideRingDisplay').textContent = outsideRing;
+            document.getElementById('outsideBoxDisplay').textContent = outsideBox;
+            accuracyDisplay.textContent = accuracy + '%';
+            
+            return total;
+        }
+
+        function saveScore() {
+            console.log('=== SAVE SCORE STARTED ===');
+            
+            if (!selectedPersonnel || !currentSession) {
+                alert('Pilih personel dan sesi terlebih dahulu!');
+                return;
+            }
+
+            if (!currentBulletCount || currentBulletCount <= 0) {
+                alert('Tentukan jumlah peluru terlebih dahulu!');
+                return;
+            }
+
+            const existingCount = scores.filter(s => 
+                s.nrp === selectedPersonnel.nrp && 
+                s.session === currentSession
+            ).length;
+            
+            if (existingCount >= 3) {
+                alert(`⚠️ Maksimal Latihan\n\n${selectedPersonnel.name} sudah 3x latihan ${currentSession}.\n\nMaksimal 3x latihan per personel per sesi.\n\nJika ingin input lagi, hapus salah satu data lama terlebih dahulu.`);
+                return;
+            }
+
+            let insideRing = 0;
+            for (let ring = 10; ring >= 1; ring--) {
+                insideRing += parseInt(scoreFields[`r${ring}`].value) || 0;
+            }
+            
+            const outsideRing = parseInt(scoreFields.outsideRing.value) || 0;
+            const outsideBox = parseInt(scoreFields.outsideBox.value) || 0;
+            const totalInput = insideRing + outsideRing + outsideBox;
+
+            if (totalInput > currentBulletCount) {
+                alert(`⚠️ Peringatan!\n\nTotal peluru (${totalInput}) melebihi peluru yang diberikan (${currentBulletCount})!\n\n- Masuk Ring: ${insideRing}\n- Luar Ring: ${outsideRing}\n- Luar Kotak: ${outsideBox}\n\nSilakan periksa kembali input Anda.`);
+                return;
+            }
+
+            const accuracy = currentBulletCount > 0 ? ((insideRing / currentBulletCount) * 100).toFixed(1) : 0;
+
+            const existingIndex = scores.findIndex(s => 
+                s.nrp === selectedPersonnel.nrp && 
+                s.session === currentSession &&
+                s.iteration === currentIteration
+            );
+
+            const scoreData = {
+                rank: selectedPersonnel.rank,
+                name: selectedPersonnel.name,
+                nrp: selectedPersonnel.nrp,
+                session: currentSession,
+                iteration: currentIteration,
+                r10: parseInt(scoreFields.r10.value) || 0,
+                r9: parseInt(scoreFields.r9.value) || 0,
+                r8: parseInt(scoreFields.r8.value) || 0,
+                r7: parseInt(scoreFields.r7.value) || 0,
+                r6: parseInt(scoreFields.r6.value) || 0,
+                r5: parseInt(scoreFields.r5.value) || 0,
+                r4: parseInt(scoreFields.r4.value) || 0,
+                r3: parseInt(scoreFields.r3.value) || 0,
+                r2: parseInt(scoreFields.r2.value) || 0,
+                r1: parseInt(scoreFields.r1.value) || 0,
+                outsideRing: outsideRing,
+                outsideBox: outsideBox,
+                insideRing: insideRing,
+                totalBullets: currentBulletCount,
+                accuracy: accuracy,
+                total: calculateTotal(),
+                timestamp: new Date().toLocaleString('id-ID')
+            };
+
+            console.log('Score data prepared:', scoreData);
+
+            if (existingIndex >= 0) {
+                const existing = scores[existingIndex];
+                modalBody.innerHTML = `
+                    <div class="alert alert-warning">
+                        <strong>${existing.rank} ${existing.name}</strong> sudah di-score:<br>
+                        <strong>${existing.session} - Latihan ke-${existing.iteration}</strong><br>
+                        <small>Waktu input: ${existing.timestamp}</small><br>
+                        <small>Score: ${existing.total}</small>
+                    </div>
+                    <p>Apakah Anda ingin menimpa data lama dengan data baru?</p>
+                `;
+                validationModal.classList.add('active');
+                
+                window.tempScoreData = { scoreData, existingIndex };
+                return;
+            }
+
+            scores.push(scoreData);
+            saveToLocalStorage();
+            updateDisplay();
+            
+            console.log('Attempting to send to Google Form...');
+            sendToGoogleForm(scoreData).then(success => {
+                if (success) {
+                    console.log('✅ Score sent to Google Form immediately');
+                } else {
+                    console.log('⚠️ Score queued for later sync');
+                }
+            }).catch(err => {
+                console.log('⚠️ Error:', err);
+            });
+            
+            saveBtn.classList.add('saved');
+            setTimeout(() => saveBtn.classList.remove('saved'), 300);
+            
+            if (navigator.onLine) {
+                alert('✅ Data berhasil disimpan dan dikirim ke Google Form!');
+            } else {
+                alert('✅ Data berhasil disimpan!\n\n⚠️ Offline mode: Data akan di-sync ke Google Form saat internet aktif.');
+            }
+            
+            autoNext();
+        }
+
+        function handleOverwrite() {
+            if (window.tempScoreData) {
+                const { scoreData, existingIndex } = window.tempScoreData;
+                scores[existingIndex] = scoreData;
+                saveToLocalStorage();
+                updateDisplay();
+                
+                validationModal.classList.remove('active');
+                
+                sendToGoogleForm(scoreData).then(success => {
+                    if (success) {
+                        console.log('✅ Updated score sent to Google Form');
+                    }
+                }).catch(err => {
+                    console.log('⚠️ Error:', err);
+                });
+                
+                saveBtn.classList.add('saved');
+                setTimeout(() => saveBtn.classList.remove('saved'), 300);
+                
+                if (navigator.onLine) {
+                    alert('✅ Data berhasil diupdate dan dikirim ke Google Form!');
+                } else {
+                    alert('✅ Data berhasil diupdate!\n\n⚠️ Offline mode: Data akan di-sync ke Google Form saat internet aktif.');
+                }
+                
+                autoNext();
+            }
+        }
+
+        function resetForm() {
+            Object.values(scoreFields).forEach(field => {
+                field.value = '';
+            });
+            calculateTotal();
+            
+            selectedPersonnel = null;
+            currentIteration = 1;
+            searchInput.value = '';
+            selectedPersonnelDiv.classList.remove('active');
+            updateSaveButton();
+            
+            searchInput.focus();
+        }
+
+        function autoNext() {
+            resetForm();
+        }
+
+        function handleFilter(e) {
+            filterBtns.forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            currentFilter = e.target.dataset.filter;
+            updateTable();
+        }
+
+        function updateDisplay() {
+            dbCount.textContent = personnelDB.length;
+            totalSaved.textContent = scores.length;
+
+            if (personnelDB.length > 0) {
+                dbStatus.className = 'db-status loaded';
+                dbStatus.textContent = `✅ Database berisi ${personnelDB.length} personel`;
+                scoringForm.style.display = 'block';
+            } else {
+                dbStatus.className = 'db-status empty';
+                dbStatus.textContent = '⚠️ Database kosong. Silakan import data personel terlebih dahulu.';
+                scoringForm.style.display = 'none';
+            }
+
+            updateTable();
+        }
+
+        function updateTable() {
+            let filteredScores = scores;
+            
+            if (currentFilter !== 'all') {
+                filteredScores = scores.filter(s => s.session === currentFilter);
+            }
+
+            if (filteredScores.length === 0) {
+                dataBody.innerHTML = `
+                    <tr>
+                        <td colspan="21" class="empty-state">
+                            ${currentFilter === 'all' ? 'Belum ada data.' : `Belum ada data untuk sesi ${currentFilter}.`}
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            dataBody.innerHTML = filteredScores.map((score, index) => `
+                <tr>
+                    <td>${score.rank}</td>
+                    <td><strong>${score.name}</strong></td>
+                    <td>${score.nrp}</td>
+                    <td><small>${score.session}</small></td>
+                    <td style="background: #f0f0f0;"><strong>${score.iteration || 1}</strong></td>
+                    <td>${score.r10}</td>
+                    <td>${score.r9}</td>
+                    <td>${score.r8}</td>
+                    <td>${score.r7}</td>
+                    <td>${score.r6}</td>
+                    <td>${score.r5}</td>
+                    <td>${score.r4}</td>
+                    <td>${score.r3}</td>
+                    <td>${score.r2}</td>
+                    <td>${score.r1}</td>
+                    <td style="color: #dc3545;">${(score.outsideRing || 0) + (score.outsideBox || 0)}</td>
+                    <td><strong>${score.totalBullets || 0}</strong></td>
+                    <td style="color: #667eea;"><strong>${score.accuracy || 0}%</strong></td>
+                    <td style="background: #e3f2fd;"><strong>${score.total}</strong></td>
+                    <td style="font-size: 11px;">${score.timestamp}</td>
+                    <td>
+                        <button class="btn-delete" onclick="deleteScore('${score.nrp}', '${score.session}', ${score.iteration || 1})">
+                            🗑️
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteScore(nrp, session, iteration) {
+            if (confirm(`Hapus data scoring:\nNRP ${nrp}\n${session} - Latihan ke-${iteration}?`)) {
+                scores = scores.filter(s => !(s.nrp === nrp && s.session === session && (s.iteration || 1) === iteration));
+                saveToLocalStorage();
+                updateDisplay();
+            }
+        }
+
+        function clearAllScores() {
+            if (scores.length === 0) {
+                alert('Data scoring sudah kosong!');
+                return;
+            }
+
+            if (confirm(`⚠️ PERINGATAN!\n\nHapus SEMUA data scoring (${scores.length} records)?\n\nData personel TIDAK akan terhapus.\n\nTindakan ini tidak dapat dibatalkan!`)) {
+                if (confirm('Apakah Anda yakin? Klik OK untuk menghapus semua data scoring.')) {
+                    scores = [];
+                    saveToLocalStorage();
+                    updateDisplay();
+                    alert('✅ Semua data scoring berhasil dihapus!');
+                }
+            }
+        }
+
+        function exportToCSV() {
+            if (scores.length === 0) {
+                alert('Belum ada data untuk diexport!');
+                return;
+            }
+
+            function escapeCSV(value) {
+                if (value === null || value === undefined) return '';
+                const str = String(value);
+                if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                    return `"${str.replace(/"/g, '""')}"`;
+                }
+                return str;
+            }
+
+            const headers = ['Pangkat', 'Nama', 'NRP', 'Sesi', 'Iterasi', 'Peluru', 'R10', 'R9', 'R8', 'R7', 'R6', 'R5', 'R4', 'R3', 'R2', 'R1', 'Luar Ring', 'Luar Kotak', 'Masuk Ring', 'Akurasi (%)', 'Score', 'Waktu'];
+            
+            let csv = headers.join(',') + '\n';
+            
+            scores.forEach(score => {
+                const row = [
+                    escapeCSV(score.rank),
+                    escapeCSV(score.name),
+                    escapeCSV(score.nrp),
+                    escapeCSV(score.session),
+                    score.iteration || 1,
+                    score.totalBullets || 0,
+                    score.r10 || 0,
+                    score.r9 || 0,
+                    score.r8 || 0,
+                    score.r7 || 0,
+                    score.r6 || 0,
+                    score.r5 || 0,
+                    score.r4 || 0,
+                    score.r3 || 0,
+                    score.r2 || 0,
+                    score.r1 || 0,
+                    score.outsideRing || 0,
+                    score.outsideBox || 0,
+                    score.insideRing || 0,
+                    score.accuracy || 0,
+                    score.total || 0,
+                    escapeCSV(score.timestamp)
+                ];
+                csv += row.join(',') + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            const now = new Date();
+            const dateStr = now.toISOString().split('T')[0];
+            const timeStr = now.toTimeString().split(' ')[0].replace(/:/g, '-');
+            const filename = `scoring_v9_fixed_${dateStr}_${timeStr}.csv`;
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            alert(`✅ Data berhasil diexport!\nFile: ${filename}\n\nTotal: ${scores.length} records\n\nBuka dengan Excel atau Google Sheets.`);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
