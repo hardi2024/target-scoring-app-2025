@@ -1644,9 +1644,23 @@
                 }
             });
 
-            Object.values(scoreFields).forEach(field => {
-                field.addEventListener('input', calculateTotal);
-            });
+			Object.values(scoreFields).forEach(field => {
+				field.addEventListener('input', () => {
+					// Validasi: Cegah nilai negatif
+					if (parseInt(field.value) < 0) {
+						field.value = 0;
+					}
+					calculateTotal();
+				});
+				
+				// Tambahan: Validasi saat kehilangan focus
+				field.addEventListener('blur', () => {
+					if (!field.value || parseInt(field.value) < 0) {
+						field.value = 0;
+						calculateTotal();
+					}
+				});
+			});
             
             saveBtn.addEventListener('click', saveScore);
             resetBtn.addEventListener('click', resetForm);
@@ -2323,4 +2337,5 @@
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
+
 </html>
